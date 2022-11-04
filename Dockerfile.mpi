@@ -1,0 +1,13 @@
+FROM hpc-base:latest
+
+RUN . /load-spack-env.sh && \
+    spack install gcc@9.3.0 target=x86_64 && \
+    spack compiler add $(spack location -i gcc@9.3.0 target=x86_64)
+
+RUN . /load-spack-env.sh && \
+    spack add openmpi@4.1.3%gcc@9.3.0 target=x86_64 && \
+    spack add fftw target=IvyBridge && \
+    spack install && \
+    spack clean --all
+
+

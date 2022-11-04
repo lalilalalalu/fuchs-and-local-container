@@ -1,0 +1,43 @@
+FROM ubuntu:22.04
+
+RUN apt-get update -y && \
+    DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+        python2 \
+        python3 && \
+    rm -rf /var/lib/apt/lists/*
+
+RUN apt-get update -y && \
+    DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+        autoconf \
+        bash \
+        build-essential \
+        bzip2 \
+        ca-certificates \
+        curl \
+        file \
+        gfortran \
+        git \
+        gnupg2 \
+        gzip \
+        make \
+        patch \
+        pkg-config \
+        python3-dev \
+        tar \
+        unzip \
+        vim \
+        xz-utils \
+        zstd && \
+    rm -rf /var/lib/apt/lists/*
+
+RUN mkdir -p /opt && cd /opt && git clone --depth=1 --branch releases/v0.18 https://github.com/spack/spack spack && cd - && \
+    ln -s /opt/spack/share/spack/setup-env.sh /etc/profile.d/spack.sh && \
+    ln -s /opt/spack/share/spack/spack-completion.bash /etc/profile.d
+
+ENV PATH=/opt/spack/bin:/opt/view:$PATH \
+    SPACK_ROOT=/opt/spack
+
+RUN echo ". /opt/spack/share/spack/setup-env.sh" > /load-spack-env.sh && \
+    echo "spack env activate /opt/spack-env" > /load-spack-env.sh
+
+
